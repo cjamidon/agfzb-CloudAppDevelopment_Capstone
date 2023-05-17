@@ -101,6 +101,26 @@ def get_dealer_details(request, dealerId):
         return HttpResponse(reviews)
 
 # Create a `add_review` view to submit a review
-# def add_review(request, dealer_id):
-# ...
+def add_review(request, dealerId):
+    if request.user.is_authenticated:
+        url = "https://us-south.functions.appdomain.cloud/api/v1/web/2cebb04f-6812-4dca-b7e8-89e8991d4dc5/dealership-package/post-review"
+        
+        review["time"] = datetime.utcnow().isoformat()
+        review["dealership"] = 11
+        review["review"] = "This is a great car dealer"
+        review["purchase"] = "purchase"
+        review["another"] = "field"
+        review["purchase_date"] = "date"
+        review["car_make"] = "make"
+        review["car_model"] = "model"
+        review["cary_year"] = "year"
+        
 
+        json_payload["review"] = review
+
+        result = post_request(url, json_payload, dealerId=dealerId)
+        
+        return HttpResponse(result)
+    else:     
+        context['message'] = "Only authenticated users can create reviews"
+        return render(request, 'djangoapp/index.html', context)
